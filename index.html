@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Being Mindful - Personality Assessment</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <meta name="description" content="Discover your personality through mindful self-reflection. Take our 20-question assessment and get AI-powered insights about yourself.">
+    <meta name="keywords" content="personality test, mindfulness, self-discovery, psychology, assessment">
+    <meta property="og:title" content="Being Mindful - Personality Assessment">
+    <meta property="og:description" content="Discover your personality through mindful self-reflection">
+    <meta property="og:type" content="website">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .intro-text {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        .question-container {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            border-left: 4px solid #74b9ff;
+            transition: all 0.3s ease;
+        }
+
+        .question-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #74b9ff;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            color: #2c3e50;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .slider-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            min-width: 80px;
+        }
+
+        .slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 5px;
+            background: #e0e6ed;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(116, 185, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(116, 185, 255, 0.6);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 12px rgba(116, 185, 255, 0.4);
+        }
+
+        .slider-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e6ed;
+        }
+
+        .submit-button {
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(116, 185, 255, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .submit-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(116, 185, 255, 0.4);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #74b9ff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            border-left: 4px solid #00b894;
+        }
+
+        .results h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .results-content {
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        /* Personality Report Styling */
+        .personality-report {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .personality-report .main-title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(116, 185, 255, 0.3);
+        }
+
+        .personality-report h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #34495e;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e6ed;
+        }
+
+        .traits-section {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .trait-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            gap: 20px;
+        }
+
+        .trait-item:last-child {
+            border-bottom: none;
+        }
+
+        .trait-name {
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 140px;
+            font-size: 1rem;
+        }
+
+        .trait-score {
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            min-width: 50px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(116, 185, 255, 0.3);
+        }
+
+        .trait-insight {
+            flex: 1;
+            color: #5a6c7d;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .insights-section {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .insight-list {
+            margin-top: 15px;
+        }
+
+        .insight-item {
+            padding: 12px 0;
+            color: #2c3e50;
+            font-size: 1rem;
+            line-height: 1.6;
+            border-left: 3px solid transparent;
+            padding-left: 15px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .insight-item:hover {
+            border-left-color: #74b9ff;
+            background: rgba(116, 185, 255, 0.05);
+            padding-left: 20px;
+        }
+
+        /* Special styling for different sections */
+        .insights-section:nth-child(3) h2 {
+            color: #00b894;
+        }
+
+        .insights-section:nth-child(4) h2 {
+            color: #fdcb6e;
+        }
+
+        .insights-section:nth-child(5) h2 {
+            color: #e17055;
+        }
+
+        .insights-section:nth-child(6) h2 {
+            color: #6c5ce7;
+        }
+
+        .insights-section:nth-child(7) h2 {
+            color: #fd79a8;
+        }
+
+        /* Responsive design for personality report */
+        @media (max-width: 768px) {
+            .personality-report .main-title {
+                font-size: 1.8rem;
+                padding: 15px;
+            }
+
+            .trait-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .trait-name {
+                min-width: auto;
+                font-size: 1.1rem;
+            }
+
+            .trait-score {
+                align-self: flex-start;
+            }
+
+            .insights-section, .traits-section {
+                padding: 20px;
+            }
+        }
+
+        .error-message {
+            display: none;
+            background: #ff7675;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.2rem;
+            }
+            
+            .content {
+                padding: 25px;
+            }
+            
+            .question-container {
+                padding: 20px;
+            }
+            
+            .slider-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .slider-label {
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1.8rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .question-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Being Mindful</h1>
+            <p class="subtitle">Discover your personality through mindful self-reflection</p>
+        </div>
+        
+        <div class="content">
+            <div class="intro-text">
+                <p>Welcome to your personality assessment! Please read each statement carefully and use the slider to indicate how likely it is that you would agree with it.</p>
+                <p><strong>Scale:</strong> 1 = Least Likely, 7 = Most Likely</p>
+            </div>
+
+            <form id="personalityForm">
+                <div id="questionsContainer"></div>
+                
+                <div class="submit-section">
+                    <button type="submit" class="submit-button" id="submitBtn">
+                        Analyze My Personality
+                    </button>
+                    
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Analyzing your responses...</p>
+                    </div>
+                    
+                    <div class="error-message" id="errorMessage"></div>
+                </div>
+            </form>
+
+            <div class="results" id="results">
+                <h2>Your Personality Analysis</h2>
+                <div class="results-content" id="resultsContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Questions data
+        const questions = [
+            {"id":"Q01","text":"I feel energized after meeting new people.","trait":"Extraversion"},
+            {"id":"Q02","text":"I keep my promises even when no one is checking.","trait":"Conscientiousness"},
+            {"id":"Q03","text":"I get stressed easily by small things.","trait":"Emotional_Stability","reverse":true},
+            {"id":"Q04","text":"I enjoy exploring new ideas, art, or viewpoints.","trait":"Openness"},
+            {"id":"Q05","text":"I often put others' needs ahead of my own.","trait":"Agreeableness"},
+            {"id":"Q06","text":"I plan tasks and stick to deadlines.","trait":"Conscientiousness"},
+            {"id":"Q07","text":"I prefer a quiet night to a lively social event.","trait":"Extraversion","reverse":true},
+            {"id":"Q08","text":"I stay calm and collected under pressure.","trait":"Emotional_Stability"},
+            {"id":"Q09","text":"I like routines more than surprises.","trait":"Openness","reverse":true},
+            {"id":"Q10","text":"I find it easy to see things from others' perspectives.","trait":"Agreeableness"},
+            {"id":"Q11","text":"I act quickly even with limited information.","trait":"Decisiveness"},
+            {"id":"Q12","text":"I double-check details to avoid mistakes.","trait":"Conscientiousness"},
+            {"id":"Q13","text":"I feel comfortable leading group efforts.","trait":"Extraversion"},
+            {"id":"Q14","text":"I bounce back quickly after setbacks.","trait":"Emotional_Stability"},
+            {"id":"Q15","text":"I question traditional ways of doing things.","trait":"Openness"},
+            {"id":"Q16","text":"I avoid conflicts, even when I disagree.","trait":"Agreeableness","reverse":true},
+            {"id":"Q17","text":"I track habits or goals to measure progress.","trait":"Conscientiousness"},
+            {"id":"Q18","text":"I enjoy taking calculated risks.","trait":"Risk_Orientation"},
+            {"id":"Q19","text":"I prefer collaborating to competing.","trait":"Agreeableness"},
+            {"id":"Q20","text":"I reflect on my feelings to understand my reactions.","trait":"Self_Insight"}
+        ];
+
+        // Initialize the form
+        function initializeForm() {
+            const container = document.getElementById('questionsContainer');
+            
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                questionDiv.innerHTML = `
+                    <div class="question-number">Question ${index + 1}</div>
+                    <div class="question-text">${question.text}</div>
+                    <div class="slider-container">
+                        <span class="slider-label">Least Likely</span>
+                        <input type="range" 
+                               class="slider" 
+                               id="${question.id}" 
+                               name="${question.id}" 
+                               min="1" 
+                               max="7" 
+                               value="4"
+                               required>
+                        <span class="slider-value" id="${question.id}-value">4</span>
+                        <span class="slider-label">Most Likely</span>
+                    </div>
+                    <div class="scale-labels">
+                        <span>1</span>
+                        <span>2</span>
+                        <span>3</span>
+                        <span>4</span>
+                        <span>5</span>
+                        <span>6</span>
+                        <span>7</span>
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners for sliders
+            questions.forEach(question => {
+                const slider = document.getElementById(question.id);
+                const valueDisplay = document.getElementById(`${question.id}-value`);
+                
+                slider.addEventListener('input', function() {
+                    valueDisplay.textContent = this.value;
+                });
+            });
+        }
+
+        // Calculate trait scores
+        function calculateTraitScores(responses) {
+            const traitScores = {
+                Extraversion: [],
+                Conscientiousness: [],
+                Emotional_Stability: [],
+                Openness: [],
+                Agreeableness: [],
+                Decisiveness: [],
+                Risk_Orientation: [],
+                Self_Insight: []
+            };
+
+            responses.forEach(response => {
+                const question = questions.find(q => q.id === response.id);
+                let score = parseInt(response.value);
+                
+                // Apply reverse scoring if needed
+                if (question.reverse) {
+                    score = 8 - score;
+                }
+                
+                traitScores[question.trait].push(score);
+            });
+
+            // Calculate means
+            const traitMeans = {};
+            Object.keys(traitScores).forEach(trait => {
+                if (traitScores[trait].length > 0) {
+                    traitMeans[trait] = (traitScores[trait].reduce((a, b) => a + b, 0) / traitScores[trait].length).toFixed(1);
+                }
+            });
+
+            return traitMeans;
+        }
+
+        // Submit form
+        document.getElementById('personalityForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('errorMessage');
+            const results = document.getElementById('results');
+            
+            // Hide previous results and errors
+            results.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Collect responses
+            const responses = questions.map(question => ({
+                id: question.id,
+                value: document.getElementById(question.id).value
+            }));
+            
+            // Calculate trait scores
+            const traitScores = calculateTraitScores(responses);
+            
+            // Show loading
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+            
+            try {
+                // Prepare the prompt for OpenAI
+                const systemMessage = `You are a supportive, insightful personality coach. 
+Your style is warm, engaging, and motivational. 
+You highlight insights in a user-friendly way, using clear sections, headers, and occasional emojis for readability. 
+Avoid medical terms, clinical diagnoses, or generic clichés. 
+Always write as if you are talking directly to the user: positive, practical, and easy to digest.`;
+
+                const developerMessage = `SCORING_SPEC:
+- Likert scale: 1 (least likely) … 7 (most likely).
+- Reverse items: Q03, Q07, Q09, Q16 → use 8 - response.
+- Compute means for:
+  Extraversion: Q01,Q07(r),Q13
+  Conscientiousness: Q02,Q06,Q12,Q17
+  Emotional_Stability: Q03(r),Q08,Q14
+  Openness: Q04,Q09(r),Q15
+  Agreeableness: Q05,Q10,Q16(r),Q19
+  Decisiveness: Q11
+  Risk_Orientation: Q18
+  Self_Insight: Q20
+- Pick a short "Type Label" by combining the two strongest traits (e.g., "Compassionate Explorer").
+- Keep the full report between 500–700 words.
+- Use the OUTPUT_FORMAT exactly.`;
+
+                const userMessage = `
+QUESTIONNAIRE:
+${JSON.stringify(questions, null, 2)}
+
+RESPONSES:
+${JSON.stringify(responses, null, 2)}
+
+TASK:
+1) Apply SCORING_SPEC to compute trait scores (1–7).
+2) Write a clean, insightful analysis in this exact OUTPUT_FORMAT:
+
+OUTPUT_FORMAT (Clean HTML):
+
+<div class="personality-report">
+<h1 class="main-title">🌟 Your Personality Snapshot: {{TYPE_LABEL}}</h1>
+
+<div class="traits-section">
+<h2>🔑 Your Core Traits</h2>
+<div class="trait-item">
+<span class="trait-name">Extraversion</span>
+<span class="trait-score">{{SCORE}}</span>
+<span class="trait-insight">{{INSIGHT}}</span>
+</div>
+<div class="trait-item">
+<span class="trait-name">Conscientiousness</span>
+<span class="trait-score">{{SCORE}}</span>
+<span class="trait-insight">{{INSIGHT}}</span>
+</div>
+<div class="trait-item">
+<span class="trait-name">Emotional Stability</span>
+<span class="trait-score">{{SCORE}}</span>
+<span class="trait-insight">{{INSIGHT}}</span>
+</div>
+<div class="trait-item">
+<span class="trait-name">Openness</span>
+<span class="trait-score">{{SCORE}}</span>
+<span class="trait-insight">{{INSIGHT}}</span>
+</div>
+<div class="trait-item">
+<span class="trait-name">Agreeableness</span>
+<span class="trait-score">{{SCORE}}</span>
+<span class="trait-insight">{{INSIGHT}}</span>
+</div>
+<div class="trait-item">
+<span class="trait-name">Decisiveness</span>
+<span class="trait-score">{{SCORE}}</span>
+<span class="trait-insight">{{INSIGHT}}</span>
+</div>
+<div class="trait-item">
+<span class="trait-name">Risk Orientation</span>
+<span class="trait-score">{{SCORE}}</span>
+<span class="trait-insight">{{INSIGHT}}</span>
+</div>
+<div class="trait-item">
+<span class="trait-name">Self-Insight</span>
+<span class="trait-score">{{SCORE}}</span>
+<span class="trait-insight">{{INSIGHT}}</span>
+</div>
+</div>
+
+<div class="insights-section">
+<h2>🌍 How You Tend to Show Up</h2>
+<div class="insight-list">
+<div class="insight-item">• {{CONCRETE_BEHAVIOR_PATTERN}}</div>
+<div class="insight-item">• {{CONCRETE_BEHAVIOR_PATTERN}}</div>
+<div class="insight-item">• {{CONCRETE_BEHAVIOR_PATTERN}}</div>
+<div class="insight-item">• {{CONCRETE_BEHAVIOR_PATTERN}}</div>
+<div class="insight-item">• {{CONCRETE_BEHAVIOR_PATTERN}}</div>
+</div>
+</div>
+
+<div class="insights-section">
+<h2>💪 Strengths to Celebrate</h2>
+<div class="insight-list">
+<div class="insight-item">• {{EMPOWERING_STRENGTH}}</div>
+<div class="insight-item">• {{EMPOWERING_STRENGTH}}</div>
+<div class="insight-item">• {{EMPOWERING_STRENGTH}}</div>
+<div class="insight-item">• {{EMPOWERING_STRENGTH}}</div>
+<div class="insight-item">• {{EMPOWERING_STRENGTH}}</div>
+</div>
+</div>
+
+<div class="insights-section">
+<h2>⚠️ Growth Opportunities</h2>
+<div class="insight-list">
+<div class="insight-item">• {{CONSTRUCTIVE_GROWTH_AREA}}</div>
+<div class="insight-item">• {{CONSTRUCTIVE_GROWTH_AREA}}</div>
+<div class="insight-item">• {{CONSTRUCTIVE_GROWTH_AREA}}</div>
+<div class="insight-item">• {{CONSTRUCTIVE_GROWTH_AREA}}</div>
+<div class="insight-item">• {{CONSTRUCTIVE_GROWTH_AREA}}</div>
+</div>
+</div>
+
+<div class="insights-section">
+<h2>🚀 Practical Growth Tips</h2>
+<div class="insight-list">
+<div class="insight-item">• {{ACTIONABLE_TIP}}</div>
+<div class="insight-item">• {{ACTIONABLE_TIP}}</div>
+<div class="insight-item">• {{ACTIONABLE_TIP}}</div>
+<div class="insight-item">• {{ACTIONABLE_TIP}}</div>
+<div class="insight-item">• {{ACTIONABLE_TIP}}</div>
+</div>
+</div>
+
+<div class="insights-section">
+<h2>🤝 Work & Collaboration Style</h2>
+<div class="insight-list">
+<div class="insight-item">• {{TEAMWORK_INSIGHT}}</div>
+<div class="insight-item">• {{TEAMWORK_INSIGHT}}</div>
+<div class="insight-item">• {{TEAMWORK_INSIGHT}}</div>
+<div class="insight-item">• {{TEAMWORK_INSIGHT}}</div>
+</div>
+</div>
+</div>
+
+INSTRUCTIONS:
+- Replace {{TYPE_LABEL}} with a creative 2-word personality type
+- Replace {{SCORE}} with actual trait scores (1-7 scale)
+- Replace {{INSIGHT}} with short, friendly insights for each trait
+- Replace all {{PLACEHOLDER}} with specific, actionable content
+- Keep insights concrete, supportive, and easy to understand
+- Use warm, encouraging language throughout
+- Make each insight valuable and personalized
+- Avoid clinical terms or generic advice`;
+
+                // Call OpenAI API
+                const response = await fetch('/api/analyze-personality', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        systemMessage,
+                        developerMessage,
+                        userMessage,
+                        traitScores
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to analyze personality');
+                }
+
+                const data = await response.json();
+                
+                // Display results
+                document.getElementById('resultsContent').innerHTML = data.analysis;
+                results.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = 'Sorry, there was an error analyzing your responses. Please try again.';
+                errorMessage.style.display = 'block';
+            } finally {
+                // Hide loading
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Initialize the form when page loads
+        document.addEventListener('DOMContentLoaded', initializeForm);
+    </script>
+</body>
+</html>
+
