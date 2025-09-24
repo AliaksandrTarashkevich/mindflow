@@ -14,16 +14,18 @@
 
 ## 🎯 Option 1: Vercel (Recommended - FREE)
 
-### Step 1: Prepare GitHub Repository
+### Step 1: Push to Existing GitHub Repository
 ```bash
-# If not already done:
-git init
-git add .
-git commit -m "Initial commit: Mindflow Personality Assessment"
+# Your repository is already set up at:
+# https://github.com/AliaksandrTarashkevich/mindflow.git
 
-# Create repository on GitHub, then:
-git remote add origin https://github.com/yourusername/mindflow-personality
-git push -u origin main
+# Push your changes (you may need to authenticate):
+git push origin main
+
+# If you get authentication errors, you can:
+# 1. Use GitHub CLI: gh auth login
+# 2. Use Personal Access Token
+# 3. Or manually upload files via GitHub web interface
 ```
 
 ### Step 2: Deploy on Vercel
