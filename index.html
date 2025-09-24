@@ -255,6 +255,54 @@
             box-shadow: 0 8px 20px rgba(116, 185, 255, 0.3);
         }
 
+        .portrait-section {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .portrait-description {
+            font-style: italic;
+            color: #5a6c7d;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .portrait-image {
+            max-width: 400px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .portrait-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .portrait-placeholder {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 40px 20px;
+            border-radius: 15px;
+            color: #6c757d;
+        }
+
+        .portrait-placeholder .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #74b9ff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
         .personality-report h2 {
             font-size: 1.4rem;
             font-weight: 600;
@@ -640,11 +688,23 @@ ${JSON.stringify(responses, null, 2)}
 TASK:
 1) Apply SCORING_SPEC to compute trait scores (1–7).
 2) Write a clean, insightful analysis in this exact OUTPUT_FORMAT:
+3) Generate a visual description for an AI-generated portrait that represents this personality type
 
 OUTPUT_FORMAT (Clean HTML):
 
 <div class="personality-report">
 <h1 class="main-title">🌟 Your Personality Snapshot: {{TYPE_LABEL}}</h1>
+
+<div class="portrait-section">
+<h2>🎨 Your Personality Portrait</h2>
+<div class="portrait-description">{{PORTRAIT_DESCRIPTION}}</div>
+<div class="portrait-image" id="portraitImage">
+<div class="portrait-placeholder">
+<div class="spinner"></div>
+<p>Generating your personality portrait...</p>
+</div>
+</div>
+</div>
 
 <div class="traits-section">
 <h2>🔑 Your Core Traits</h2>
@@ -749,11 +809,13 @@ INSTRUCTIONS:
 - Replace {{TYPE_LABEL}} with a creative 2-word personality type
 - Replace {{SCORE}} with actual trait scores (1-7 scale)
 - Replace {{INSIGHT}} with short, friendly insights for each trait
+- Replace {{PORTRAIT_DESCRIPTION}} with a detailed visual description for an AI-generated portrait that represents this personality type (e.g., "A thoughtful person with warm eyes, surrounded by books and plants, in a cozy study with soft lighting, wearing comfortable earth-tone clothing, with a gentle smile that reflects their introspective nature")
 - Replace all {{PLACEHOLDER}} with specific, actionable content
 - Keep insights concrete, supportive, and easy to understand
 - Use warm, encouraging language throughout
 - Make each insight valuable and personalized
-- Avoid clinical terms or generic advice`;
+- Avoid clinical terms or generic advice
+- Portrait description should be detailed, artistic, and reflect the personality traits`;
 
                 // Call OpenAI API
                 const response = await fetch('/api/analyze-personality', {
@@ -779,6 +841,12 @@ INSTRUCTIONS:
                 document.getElementById('resultsContent').innerHTML = data.analysis;
                 results.style.display = 'block';
                 
+                // Generate portrait if description is available
+                const portraitDescription = extractPortraitDescription(data.analysis);
+                if (portraitDescription) {
+                    generatePortrait(portraitDescription);
+                }
+                
             } catch (error) {
                 console.error('Error:', error);
                 errorMessage.textContent = 'Sorry, there was an error analyzing your responses. Please try again.';
@@ -789,6 +857,44 @@ INSTRUCTIONS:
                 submitBtn.disabled = false;
             }
         });
+
+        // Extract portrait description from analysis HTML
+        function extractPortraitDescription(analysisHTML) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(analysisHTML, 'text/html');
+            const portraitDescription = doc.querySelector('.portrait-description');
+            return portraitDescription ? portraitDescription.textContent.trim() : null;
+        }
+
+        // Generate portrait using OpenAI DALL-E
+        async function generatePortrait(description) {
+            try {
+                const response = await fetch('/api/generate-portrait', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        description: description
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate portrait');
+                }
+
+                const data = await response.json();
+                
+                // Display the generated image
+                const portraitImage = document.getElementById('portraitImage');
+                portraitImage.innerHTML = `<img src="${data.imageUrl}" alt="Personality Portrait" style="width: 100%; height: auto; border-radius: 15px;">`;
+                
+            } catch (error) {
+                console.error('Error generating portrait:', error);
+                const portraitImage = document.getElementById('portraitImage');
+                portraitImage.innerHTML = '<div class="portrait-placeholder"><p>Portrait generation unavailable</p></div>';
+            }
+        }
 
         // Initialize the form when page loads
         document.addEventListener('DOMContentLoaded', initializeForm);

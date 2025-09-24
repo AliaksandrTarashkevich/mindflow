@@ -3,6 +3,9 @@
   "functions": {
     "api/analyze-personality.js": {
       "maxDuration": 30
+    },
+    "api/generate-portrait.js": {
+      "maxDuration": 60
     }
   }
 }
